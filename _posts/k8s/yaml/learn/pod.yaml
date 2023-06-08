@@ -1,0 +1,275 @@
+apiVersion: apps/v1
+kind: Deployment
+#元数据
+metadata:
+  #pod的名称
+  name: zd
+  #namespace
+  namespace: zd
+  #标签列表(Label其实就一对 key/value),Labels的值对系统本身并没有什么含义，
+  #只是对用户才有意义。同一个资源对象的labels属性的key必须唯一.
+  #label可以附加到各种资源对象上，如Node,Pod,Service,RC等。一个资源拥有多个标签，可以实现不同维度的管理
+  labels:
+    #label 必须以字母或数字开头，可以使用字母、数字、连字符、点和下划线，最长63个字符
+    #kubectl get pods --show-labels(查看pod显示labels)
+    - environment: dev
+    - release: stable
+    - app: zd
+  #自定义注解列表(客户端程序可以获取这些元数据)
+  annotations:
+    - imageregistry: "https://hub.docker.com/"
+spec:
+  selector:
+    matchLabels:
+      app: zd
+  #用于将现有 Pod 替换为新 Pod 的部署策略。
+  strategy:
+    #Recreate:重新创建
+    #RollingUpdate:滚动更新
+    type: RollingUpdate
+    #滚动更新配置参数。 仅当 DeploymentStrategyType = RollingUpdate 时出现。
+    rollingUpdate:
+      #可调度的最大 Pod 数高于所需的 Pod 数
+      maxSurge: 1
+      #更新期间可能不可用的最大 Pod 数。 值可以是绝对数字（例如：5）或所需 Pod 的百分比
+      maxUnavailable: 2
+  template:
+    spec:
+      imagePullSecrets:
+        - name: zd
+      #挂载数据卷
+      volumes:
+        - name: zd
+          emptyDir: { }
+        - name: zd-1
+          #投射数据卷(Secret/ConfigMap/Downward API/ServiceAccountToken)
+          projected:
+            sources:
+              #Secret:加密数据，存放到 Etcd 中
+              #ConfigMap: 应用配置
+              #Downward API:让 Pod 里的容器能够直接获取到这个 Pod API 对象本身的信息。
+              #ServiceAccountToken:授权信息
+              - secret:
+                  name: zd-secret
+      securityContext:
+        fsGroup: 0
+        runAsUser: 1001
+        runAsGroup: 0
+        
+      #镜像列表
+      containers:
+        - name: tomcat
+          #镜像名称
+          image: redis:latest
+          #镜像拉取策略 （Always：每次拉取最新镜像，在:latest时默认Always）
+          #IfNotPresent: 已经存在的情况下直接略过拉取镜像的操作
+          #Never: 只使用本地镜像，从不拉取
+          imagePullPolicy: Always
+          #安全上下文（Security Context）定义 Pod 或 Container 的特权与访问控制设置
+          #自主访问控制:基于 用户 ID（UID）和组 ID（GID）
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 1001
+          #定期探测容器活性。 如果探测失败，容器将重新启动。
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            #启动活动探测之前容器启动后的秒数。
+            initialDelaySeconds: 20
+            #探测超时后的秒数。 默认为 1 秒。 最小值为 1。
+            timeoutSeconds: 1
+            #探测失败后被视为成功的最小连续成功次数。
+            successThreshold: 1
+            #成功后被视为失败的探测的最小连续失败次数
+            failureThreshold: 3
+            #执行探测的频率（以秒为单位）。 默认为 10 秒。
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            #启动活动探测之前容器启动后的秒数。
+            initialDelaySeconds: 20
+            #探测超时后的秒数。 默认为 1 秒。 最小值为 1。
+            timeoutSeconds: 1
+            #探测失败后被视为成功的最小连续成功次数。
+            successThreshold: 1
+            #成功后被视为失败的探测的最小连续失败次数
+            failureThreshold: 3
+            #执行探测的频率（以秒为单位）。 默认为 10 秒。
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 200m
+          #使用数据卷
+          volumeMounts:
+            #容器内安装数据卷的位置
+            - mountPath: /home
+              #数据卷的名称
+              name: zd-volume
+          #容器要使用的块设备列表
+          volumeDevices:
+            #是设备将映射到的容器内的路径
+            - devicePath: /app
+              name: zd-volume
+          #容器中设置的环境变量
+          env:
+            - name: name
+              value: value
+          #ConfigMap定义的配置可以通过envFrom传入给容器
+          envFrom:
+            - configMapRef:
+                name: zd-mysql-nacos
+              #秘钥配置
+              secretRef:
+                name: zd-secret
+          #探针
+          #livenessProbe:指示容器是否正在运行。如果存活态探测失败，则 kubelet 会杀死容器， 并且容器将根据其重启策略决定未来
+          #readinessProbe:指示容器是否准备好为请求提供服务。
+          #startupProbe: 指示容器中的应用是否已经启动。
+          ports:
+            - containerPort: 80
+              name: tcp
+      #容器的重启策略
+      #Always: 如果容器停止，总是重新启动容器。
+      #OnFailure: 容器终止运行且退出码不为0时重启
+      #Never : 不论状态为何， kubelet 都不重启该容器
+      restartPolicy: Always
+
+
+
+#mysql配置
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: zd
+  name: zd-mysql-nacos
+data:
+  mysql.host: "www.uetty.com"
+  mysql.port: "8806"
+  mysql.name: "nacos"
+  mysql.user: "uetty"
+  mysql.password: "35#B!!)"
+  
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: zd
+  name: zd-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: zd
+  name: zd-service
+spec:
+  selector:
+    app: zd
+  #ClusterIP(默认): 分配一个集群内部 IP 地址，用于对Endpoint进行负载平衡。
+  #NodePort: 建立在 ClusterIP 之上，并在每个节点上分配一个端口，该端口路由到与 clusterIP 相同的Endpoint。
+  #LoadBalancer: NodePort 上并创建一个外部负载均衡器
+  #ExternalName: 将此服务别名为指定的 externalName。
+  type: NodePort
+  #服务的 IP 地址,通常是随机分配的。 如果一个地址是手动指定的.
+  #type:ExternalName（要求此字段为空）
+  clusterIP: None
+  #此服务公开的端口列表
+  ports:
+      #此服务将公开的端口。
+    - port: 80
+      #此端口的 IP 协议。 支持“TCP”、“UDP”和“SCTP”。 默认为 TCP
+      protocol: TCP
+      #要在服务所针对的 pod 上访问的端口的编号或名称。 号码必须在 1 到 65535 的范围内。名称必须是 IANA SVC NAME
+      targetPort: 80
+      #服务中此端口的名称。 这必须是 DNS_LABEL。 ServiceSpec 中的所有端口都必须具有唯一的名称。
+      #在考虑服务的Endpoint时，这必须与 EndpointPort 中的“名称”字段匹配。 如果仅在此服务上定义了一个 ServicePort，则可选。
+      name: a
+      #当 type 为 NodePort 或 LoadBalancer 时，此服务在其上公开的每个节点上的端口
+      nodePort: 80
+  #用于维护会话亲缘关系。 启用基于客户端 IP 的会话亲缘关系。
+  #ClientIP: 确保每次都将来自特定客户端的连接传递到同一个 Pod
+  #None(默认)
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      #指定ClientIP 类型会话粘滞时间的秒数(当sessionAffinity：ClientIP)
+      timeoutSeconds: 10800
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  namespace: zd
+  name: zd-Endpoints
+subsets:
+  - addresses:
+      # 此Endpoint的 IP。 (127.0.0.0/8)、本地链路 (169.254.0.0/16) 或链路本地组播 ((224.0.0.0/24)。IPv6 也被接受
+      - ip: 127.0.0.1
+        #此Endpoint的主机名
+        hostname: blog.touchfish.com
+        #托管此Endpoint的节点。 这可用于确定节点本地的Endpoint。
+        nodeName: zd
+        #对提供Endpoint的对象的引用。
+        targetRef:
+          #对提供Endpoint的对象的引用
+          name: zd-Endpoints
+          #所指对象的命名空间
+          namespace: zd
+          #所指对象的 API 版本
+          apiVersion: v1
+          kind: Endpoints
+          #进行此引用的特定资源版本
+          resourceVersion: v1
+    ports:
+        #Endpoint的端口号
+      - port: 80
+        #此端口的名称。 这必须与相应 ServicePort 中的“名称”字段匹配。 必须是 DNS_LABEL。 仅当定义了一个端口时才可选。
+        name: a
+        #此端口的 IP 协议。 支持“TCP”、“UDP”和“SCTP”。 默认为 TCP
+        protocol: TCP
+    #提供相关端口但当前未标记为就绪的 IP 地址，因为它们尚未完成启动、最近未通过就绪检查或最近未通过活动检查。
+  - notReadyAddresses:
+      - ip: 127.0.0.1
+
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  namespace: zd
+  name: zd-EndpointSlice
+#指定此 EndpointSlice 携带的地址类型。 此切片中的所有地址必须是相同类型。 该字段在创建后是不可变的
+#IPv4: 表示 IPv4 地址
+#IPv6: 代表一个 IPv6 地址
+#FQDN: 代表完全合格的域名
+addressType: IPv4
+endpoints:
+  - addresses:
+      - "127.0.0.1"
+    conditions:
+      #ready: 表示此Endpoint已准备好接收流量，具体取决于管理Endpoint的任何系统。
+      #false: 表示未知状态。 在大多数情况下，消费者应该将此未知状态解释为就绪。
+      ready: true
+      #services 与 ready 相同，除了它的设置与Endpoint的终止状态无关 ,可以使用 EndpointSliceTerminationCondition 功能门启用此字段。
+      #true: 终止正在就绪状态的Endpoint
+      #false: 消费者应遵循就绪条件
+      serving: true
+      #终止指示此Endpoint正在终止
+      #true: 终止指示此Endpoint正在终止
+      terminating: true
+    #此Endpoint的主机名。 Endpoint的消费者可以使用该字段来区分Endpoint
+    hostname: pod-1
+    #表示托管此Endpoint的节点的名称
+    nodeName: node-1
+    #此Endpoint所在的区域的名称
+    zone: us-west2-a
+ports:
+  #Endpoint的端口号
+  - port: 80
+    #此端口的名称。 这必须与相应 ServicePort 中的“名称”字段匹配。 必须是 DNS_LABEL。 仅当定义了一个端口时才可选。
+    name: a
+    #此端口的 IP 协议。 支持“TCP”、“UDP”和“SCTP”。 默认为 TCP
+    protocol: TCP

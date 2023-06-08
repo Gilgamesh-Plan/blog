@@ -1,0 +1,245 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+title:  我的作品集
+subtitle: 精心制作
+name: zd
+email: 670677781@qq.com
+description: 精心制作
+keywords: 精心制作
+encoding: "utf-8"
+favicon: favicon.ico
+
+repository: Gilgamesh-Plan/blog
+github_url: https://github.com/Gilgamesh-Plan
+url: hhttps://github.com/Gilgamesh-Plan
+enforce_ssl: touchfishes.com
+
+## Gem
+plugins:
+  - jekyll-paginate
+  - jekyll-geo-pattern
+  - rouge
+  - kramdown
+  - jekyll-github-metadata
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+lsi:         false
+excerpt_separator: "\n\n"
+
+source:      .
+destination: ./_site
+
+quiet:    false
+defaults: []
+
+kramdown:
+  input: GFM
+  enable_coderay: true
+  syntax_highlighter: rouge
+
+syntax_highlighter_opts:
+  coderay_line_numbers:  nil
+
+# Pagination
+paginate: 12
+paginate_path: 'page:num'
+
+# Navigation. top menu list
+menus:
+
+  -
+    href: http://itmooc.tech/
+    label: IDEA破解
+    target: _blank
+
+  -
+    href: /money.html
+    label: 挣钱
+    target: _self
+
+  -
+    href: /it.html
+    label: 深度
+    target: _self
+
+  -
+    href: /life.html
+    label: 故事
+    target: _self
+
+  -
+    href: /arch.html
+    label: 架构
+    target: _self
+
+  -
+    href: /link.html
+    label: 友链
+    target: _self
+
+  -
+    href: /about.html
+    label: 关于
+    target: _self
+
+# Navigation. main menu list
+navs:
+
+  -
+    href: /
+    label: Home
+
+  -
+    href: /middleware.html
+    label: 中间件
+    target: _self
+    subnav:
+      - subHref: /redis.html
+        subLabel: Redis
+        
+      - subHref: /elasticsearch.html
+        subLabel: Elasticsearch
+
+      - subHref: /mq.html
+        subLabel: MQ
+        
+      - subHref: /mysql.html
+        subLabel: MYSQL
+
+      - subHref: /zookeeper.html
+        subLabel: zookeeper
+
+  -
+    href: /java.html
+    label: JAVA
+    target: _self
+    subnav:
+      - subHref: /set.html
+        subLabel: 集合
+      - subHref: /thread.html
+        subLabel: 多线程
+      - subHref: /jvm.html
+        subLabel: JVM
+
+  - href: /microservice.html
+    label: 微服务
+    target: _self
+
+  - href: /container.html
+    label: 容器
+    target: _self
+    subnav:
+      - subHref: /container.html
+        subLabel: 容器
+      - subHref: /k8s.html
+        subLabel: 容器编排K8S
+        
+  - href: /leetcode.html
+    label: leetcode
+    target: _self
+    subnav:
+      - subHref: /dp.html
+        subLabel: 动态规划
+
+
+
+# labels. my blog key words
+labels:
+
+  -
+    href: /payment.html
+    label: Pay
+    target: _self
+
+  -
+    href: /mongodb.html
+    label: MongoDB
+    target: _blank
+
+  -
+    href: /docker.html
+    label: Docker
+    target: _blank
+
+  -
+    href: /open-source.html
+    label: Code
+    target: _blank
+
+  -
+    href: /gitchat.html
+    label: Chat
+    target: _blank
+
+  -
+    href: https://blog.touchfishes.com/stock.html
+    label: 股票
+    target: _blank
+
+
+# selected articles
+classes:
+
+  -
+    href: /touchfishes.html
+    name: 摸鱼故事
+    describe: 摸鱼故事
+
+
+
+
+# ---------------- #
+#       RSS        #
+# ---------------- #
+subscribe_rss: /feed.xml
+
+# Sidebar to show popular repo
+side_bar_repo_limit: 6 # Number of repos to show
+
+# Google Analytics
+# analytics :
+# provider : google
+#   google :
+#     tracking_id : ''  # ex. UA-72165600-X
+
+
+# For about.html. Fell free to create your own!
+skill_software_keywords: [Java, MySQL, Oracle, Design Patterns]
+skill_j2ee_keywords: [Spring, Struct, Hibernet, MyBatis, JSP]
+skill_web_keywords: [HTML, CSS, JS, JQuery, Ajax, NodeJS, ExpressJS, MongoDB, Redis, PHP,  Boostrap]
+skill_mobile_app_keywords: [vuejs, hyhird app]
+
+
+# ---------------- #
+#      Comments    #
+# ---------------- #
+# support provider: disqus, gitment, gitalk
+comments_provider: gitalk
+# !!!重要!!! 请修改下面这些信息为你自己申请的
+# !!!Important!!! Please modify infos below to yours
+# https://disqus.com
+disqus:
+  username: zd
+# https://imsun.net/posts/gitment-introduction/
+gitment:
+  owner: ityouknow
+  repo: blog-comments
+  oauth:
+    client_id: 61bfc53d957e74e78f8f
+    client_secret: 31c61e66cdcc9ada8db2267ee779d0bdafac434c
+# https://github.com/gitalk/gitalk#install
+gitalk:
+  owner: ityouknow
+  repo: blog-comments
+  clientID: 61bfc53d957e74e78f8f
+  clientSecret: 31c61e66cdcc9ada8db2267ee779d0bdafac434c
+# 在使用其它评论组件时可点击显示 Disqus
+lazy_load_disqus : true
