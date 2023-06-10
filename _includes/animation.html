@@ -1,17 +1,28 @@
 <div class="row">
 
     <div class="col-md-12">
+
         <ul id="posts-list">
-                <li class="posts-list-item">
-                    <div class="posts-content">
-                        <span class="posts-list-meta">《兵》</span>
-                        <video src="/assets/files/animation/《兵》.mp4" width="640" height="480" controls=""></video>
-                        <span class='circle'></span>
-                    </div>
-                </li>
+            {% for post in site.posts %}
+            {% if post.category=='animation' %}
+            <li class="posts-list-item">
+                <div class="posts-content">
+                    <span class="posts-list-meta">{{ post.date | date: "%Y-%m-%d" }}</span>
+                    <a class="posts-list-name bubble-float-left" href="{{ site.url }}{{ post.url }}">{{ post.title }}</a>
+                    <span class='circle'></span>
+                </div>
+            </li>
+            {% endif %}
+            {% endfor %}
         </ul>
+
         <!-- Pagination -->
         {% include pagination.html %}
+
+        <!-- Comments -->
+        <div class="comment">
+            {% include comments.html %}
+        </div>
     </div>
 
 </div>
