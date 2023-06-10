@@ -98,24 +98,9 @@ navs:
     label: Home
 
   -
-    href: /middleware.html
-    label: 中间件
+    href: /animation.html
+    label: 动画类
     target: _self
-    subnav:
-      - subHref: /redis.html
-        subLabel: Redis
-        
-      - subHref: /elasticsearch.html
-        subLabel: Elasticsearch
-
-      - subHref: /mq.html
-        subLabel: MQ
-        
-      - subHref: /mysql.html
-        subLabel: MYSQL
-
-      - subHref: /zookeeper.html
-        subLabel: zookeeper
 
   -
     href: /java.html
