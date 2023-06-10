@@ -3,6 +3,7 @@
     <div class="col-md-12">
         <ul id="posts-list">
             {% for file in site.static_files %}
+                {% if file.path.include?('animation') %}
                 <li class="posts-list-item">
                     <div class="posts-content">
                         <span class="posts-list-meta">{{ file.basename }}</span>
@@ -10,6 +11,7 @@
                         <span class='circle'></span>
                     </div>
                 </li>
+                {% endif %}
             {% endfor %}
         </ul> 
         <!-- Pagination -->
