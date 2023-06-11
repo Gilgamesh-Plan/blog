@@ -8,4 +8,4 @@ permalink: /java
 keywords: java
 ---
 
-{% include java.html %}
+{% include script.html %}

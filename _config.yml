@@ -103,37 +103,12 @@ navs:
     target: _self
 
   -
-    href: /java.html
-    label: JAVA
+    href: /script.html
+    label: 剧本类
     target: _self
     subnav:
-      - subHref: /set.html
-        subLabel: 集合
-      - subHref: /thread.html
-        subLabel: 多线程
-      - subHref: /jvm.html
-        subLabel: JVM
-
-  - href: /microservice.html
-    label: 微服务
-    target: _self
-
-  - href: /container.html
-    label: 容器
-    target: _self
-    subnav:
-      - subHref: /container.html
-        subLabel: 容器
-      - subHref: /k8s.html
-        subLabel: 容器编排K8S
-        
-  - href: /leetcode.html
-    label: leetcode
-    target: _self
-    subnav:
-      - subHref: /dp.html
-        subLabel: 动态规划
-
+      - subHref: /Goldfather.html
+        subLabel: Goldfather
 
 
 # labels. my blog key words
