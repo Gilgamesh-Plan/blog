@@ -8,4 +8,4 @@ permalink: /k8s
 keywords: k8s
 ---
 
-{% include k8s.html %}
+{% include analysis.html %}

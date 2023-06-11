@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 《Goldfather》剧本
-category: script
-tags: [animation]
+category: goldfather
+tags: [goldfather]
 no-post-nav: true
 ---
 

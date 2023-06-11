@@ -107,8 +107,15 @@ navs:
     label: 剧本类
     target: _self
     subnav:
-      - subHref: /Goldfather.html
+      - subHref: /goldfather.html
         subLabel: Goldfather
+
+  - href: /game.html
+    label: 游戏类
+    target: _self
+    subnav:
+      - subHref: /analysis.html
+        subLabel: 游戏分析
 
 
 # labels. my blog key words
