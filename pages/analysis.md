@@ -1,11 +1,11 @@
 ---
 layout: page
-title: k8s 系列文章
-titlebar: k8s
-menu: k8s
+title: 游戏分析
+titlebar: analysis
+menu: analysis
 css: ['blog-page.css']
-permalink: /k8s
-keywords: k8s
+permalink: /analysis
+keywords: analysis
 ---
 
 {% include analysis.html %}

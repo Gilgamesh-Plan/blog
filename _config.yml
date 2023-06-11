@@ -8,7 +8,7 @@
 # Site settings
 title:  我的作品集
 subtitle: 精心制作
-name: zd
+name: 任宇佳的作品集
 email: 670677781@qq.com
 description: 精心制作
 keywords: 精心制作
@@ -194,7 +194,7 @@ comments_provider: gitalk
 # !!!Important!!! Please modify infos below to yours
 # https://disqus.com
 disqus:
-  username: zd
+  username: 任宇佳的作品集
 # https://imsun.net/posts/gitment-introduction/
 gitment:
   owner: ityouknow

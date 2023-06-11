@@ -1,11 +1,11 @@
 ---
 layout: page
-title: JAVA 系列文章
-titlebar: JAVA
-menu: JAVA
+title: 剧本类
+titlebar: script
+menu: script
 css: ['blog-page.css']
-permalink: /java
-keywords: java
+permalink: /script
+keywords: script
 ---
 
 {% include script.html %}
