@@ -117,6 +117,10 @@ navs:
       - subHref: /analysis.html
         subLabel: 游戏分析
 
+  - href: /painting.html
+    label: 板绘
+    target: _self
+
 
 # labels. my blog key words
 labels:
